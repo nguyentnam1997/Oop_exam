@@ -12,8 +12,9 @@ public class Menu {
 
     public void selectOption() {
         System.out.println("1. Change your username");
-        System.out.println("1. Change your email");
-        System.out.println("1. Change your password");
-        System.out.println("1. Change your username");
+        System.out.println("2. Change your email");
+        System.out.println("3. Change your password");
+        System.out.println("4. Logout");
+        System.out.println("5. Quit");
     }
 }

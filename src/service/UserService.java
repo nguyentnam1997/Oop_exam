@@ -27,17 +27,22 @@ public class UserService {
 
     public User registerUser(Scanner scanner, ArrayList<User> users) {
         System.out.println("------ REGISTER -------");
+        int count = 0;
         do {
-            System.out.println("Please input your username");
+            System.out.println("Please input your username:");
             String username = scanner.nextLine();
-            for (User us :
-                    users) {
-                if (username.equalsIgnoreCase(us.getUsername())) {
-                    System.out.println("Username already exists, try again!");
+            for (User us : users) {
+                if (us.getUsername().equalsIgnoreCase(username)) {   //check user tạo ra có trùng user tồn tại trước đó chưa?
+                    count++;
                 }
-                else {
+            }
+            if (count != 0) {
+                System.out.println("Username already exists, try again!");
+                continue;
+            }
+            else {
                     do {
-                        System.out.println("Please input your email");
+                        System.out.println("Please input your email:");
                         String email = scanner.nextLine();
                         if (!UserService.isValidEmail(email)) {
                             System.out.println("Invalid email, please try again!");
@@ -45,14 +50,14 @@ public class UserService {
                         }
                         else {
                             do {
-                                System.out.println("Please input your password");
+                                System.out.println("Please input your password:");
                                 String password = scanner.nextLine();
                                 if (!UserService.isValidPassword(password)) {
                                     System.out.println("Invalid password, please try again!");
                                     continue;
                                 }
                                 else {
-                                    System.out.println("Register user successful");
+                                    System.out.println("Register user successful!!!");
                                     return new User(username, email, password);
                                 }
                             }
@@ -60,10 +65,7 @@ public class UserService {
                         }
                     }
                     while (true);
-                    break;
                 }
-            }
-            break;
         }
         while (true);
     }

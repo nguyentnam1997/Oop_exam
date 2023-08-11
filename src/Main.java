@@ -13,19 +13,27 @@ public class Main {
         UserService userService = new UserService();
         Menu menu = new Menu();
 
-        menu.welcomeMenu();
-        int choose = Integer.parseInt(scanner.nextLine());
-        if (choose == 1) {
-            System.out.println("Please input your username:");
-            String username = scanner.nextLine();
-            for (User user :
-                    users) {
-                if (username.equalsIgnoreCase(user.getUsername())) {
+        do {
+            menu.welcomeMenu();
+            int choose = Integer.parseInt(scanner.nextLine());
+            switch (choose) {
+                case 2 -> {
+                    users.add(userService.registerUser(scanner, users));
+                    continue;
+                }
+                case 1 -> {
+                    System.out.println("Please input your username:");
+                    String username = scanner.nextLine();
+                    for (User user :
+                            users) {
+                        if (username.equalsIgnoreCase(user.getUsername())) {
 
+                        }
+                    }
                 }
             }
-        } else if (choose == 2) {
-            users.add(userService.registerUser(scanner));
         }
+        while (true);
+
     }
 }

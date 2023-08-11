@@ -69,4 +69,71 @@ public class UserService {
         }
         while (true);
     }
+    public void Login(Scanner scanner, ArrayList<User> users) {
+        int count = 0;
+        do {
+            System.out.println("Please input your username:");
+            String username = scanner.nextLine();
+            for (User user : users) {
+                if (user.getUsername().equalsIgnoreCase(username)) {
+                    do {
+                        System.out.println("Please input your password:");
+                        String password = scanner.nextLine();
+                        if (!user.getPassword().equals(password)) {
+                            System.out.println("Incorrect password, please choose: ");
+                            System.out.println("1. Input password again.");
+                            System.out.println("2. Forget password?");
+                            int choosePw = Integer.parseInt(scanner.nextLine());
+                            switch (choosePw) {
+                                case 1 -> {
+                                    continue;
+                                }
+                                case 2 -> {
+                                    changePassword(scanner, user);
+                                }
+                            }
+                        }
+                        break;
+                    }
+                    while (true);
+                }
+                else count++;
+            }
+            if (count != 0) {
+                System.out.println("Incorrect username, please try again!");
+                continue;
+            }
+
+            break;
+        }
+        while (true);
+    }
+
+    public void changePassword(Scanner scanner, User user) {
+        do {
+            System.out.println("Please input your email:");
+            String email = scanner.nextLine();
+            if (!user.getEmail().equals(email)) {
+                System.out.println("Incorrect email, please try again!");
+                continue;
+            }
+            else {
+                do {
+                    System.out.println("Please input new password: ");
+                    String newPassword = scanner.nextLine();
+                    if (!UserService.isValidPassword(newPassword)) {
+                        System.out.println("Invalid password, please try again!");
+                        continue;
+                    }
+                    else {
+                        System.out.println("Create new password successful!!!");
+                        user.setPassword(newPassword);
+                    }
+                    break;
+                }
+                while (true);
+            }
+        }
+        while (true);
+    }
 }

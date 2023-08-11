@@ -2,18 +2,13 @@ package entities;
 
 public class User {
     private String username;
-    private String password;
     private String email;
+    private String password;
 
-    public User(String username, String password) {
+    public User(String username, String email, String password) {
         this.username = username;
-        this.password = password;
-    }
-
-    public User(String username, String password, String email) {
-        this.username = username;
-        this.password = password;
         this.email = email;
+        this.password = password;
     }
 
     public String getUsername() {
@@ -44,6 +39,7 @@ public class User {
     public String toString() {
         return "User{" +
                 "username='" + username + '\'' +
+                ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

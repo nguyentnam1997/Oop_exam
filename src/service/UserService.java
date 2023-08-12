@@ -1,7 +1,7 @@
 package service;
 
 import entities.User;
-import view.Menu;
+import view.Show;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -25,37 +25,52 @@ public class UserService {
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
     }
+    public int checkExistsUsername(int count, String username, ArrayList<User> users) {
+        for (User us : users) {
+            if (us.getUsername().equalsIgnoreCase(username)) {
+                count++;
+            }
+        }
+        return count;
+    }
+    public int checkExistsEmail(int count, String email, ArrayList<User> users) {
+        for (User us : users) {
+            if (us.getEmail().equalsIgnoreCase(email)) {
+                count++;
+            }
+        }
+        return count;
+    }
 
     public User registerUser(Scanner scanner, ArrayList<User> users) {
         System.out.println("------ REGISTER -------");
-        int count = 0;
         do {
+            int count = 0;
             System.out.println("Please input your username:");
             String username = scanner.nextLine();
-            for (User us : users) {
-                if (us.getUsername().equalsIgnoreCase(username)) {   //check user tạo ra có trùng user tồn tại trước đó chưa?
-                    count++;
-                }
-            }
+            count = checkExistsUsername(count, username, users);
             if (count != 0) {
                 System.out.println("Username already exists, try again!");
-                continue;
             }
             else {
                     do {
+                        count = 0;
                         System.out.println("Please input your email:");
                         String email = scanner.nextLine();
                         if (!UserService.isValidEmail(email)) {
                             System.out.println("Incorrect email, please try again!");
-                            continue;
                         }
                         else {
+                            count = checkExistsEmail(count, email, users);
+                            if (count != 0) {
+                                System.out.println("Email already exists, try again!");
+                                continue;
+                            }
                             do {
                                 System.out.println("Please input your password:");
                                 String password = scanner.nextLine();
                                 if (!UserService.isValidPassword(password)) {
                                     System.out.println("Incorrect password, please try again!");
-                                    continue;
                                 }
                                 else {
                                     System.out.println("Register user successful!!!");
@@ -70,45 +85,63 @@ public class UserService {
         }
         while (true);
     }
-    public void Login(Scanner scanner, ArrayList<User> users, Menu menu, UserService userService) {
+    public void Login(Scanner scanner, ArrayList<User> users, Show show, UserService userService) {
 //        int count = 0;
-        do {
             if (users.size() == 0) {
                 System.out.println("No user exists, please register first!");
                 users.add(registerUser(scanner, users));
             }
             else {
                 do {
+                    int count = 0;
                     System.out.println("Please input your username:");
                     String username = scanner.nextLine();
-                    for (User user : users) {
-                        if (user.getUsername().equalsIgnoreCase(username)) {
-                            checkPassword(scanner, user);
-                            menu.viewOptionAfterLogin();
-                            selectOptionAfterLogin(scanner, userService, user , users);
-                            break;
-                        }
-                        else {
-                            System.out.println("Incorrect username, please try again!");
+                    count = checkExistsUsername(count, username, users);
+                    if (count == 0) {
+                        show.reEnterUserOrBack();
+                        int choose = Integer.parseInt(scanner.nextLine());
+                        switch (choose) {
+                            case 1:
+                                continue;
+                            case 2:
+                                break;
                         }
                     }
+                    else {
+                        for (User user : users) {
+                            if (user.getUsername().equalsIgnoreCase(username)) {
+                                checkPassword(scanner, user, show);
+                                show.viewOptionAfterLogin();
+                                selectOptionAfterLogin(scanner, userService, user, users);
+                                break;
+                            }
+                        }
+                    }
+//                    System.out.println("Please input your username:");
+//                    String username = scanner.nextLine();
+//                    for (User user : users) {
+//                        if (user.getUsername().equalsIgnoreCase(username)) {
+//                            checkPassword(scanner, user);
+//                            menu.viewOptionAfterLogin();
+//                            selectOptionAfterLogin(scanner, userService, user , users);
+//                            break;
+//                        }
+//                        else {
+//                            System.out.println("Incorrect username, please try again!");
+//                        }
+//                    }
                     break;
                 }
                 while (true);
             }
-            break;
-        }
-        while (true);
     }
 
-    public void checkPassword(Scanner scanner, User user) {
+    public void checkPassword(Scanner scanner, User user, Show show) {
         do {
             System.out.println("Please input your password:");
             String password = scanner.nextLine();
             if (!user.getPassword().equals(password)) {
-                System.out.println("Incorrect password, please choose: ");
-                System.out.println("1. Input password again.");
-                System.out.println("2. Forget password?");
+                show.reEnterOrForgetPass();
                 int choosePw = Integer.parseInt(scanner.nextLine());
                 switch (choosePw) {
                     case 1 -> {
@@ -131,7 +164,7 @@ public class UserService {
         do {
             System.out.println("Please input your email:");
             String email = scanner.nextLine();
-            if (!user.getEmail().equals(email)) {
+            if (!user.getEmail().equalsIgnoreCase(email)) {
                 System.out.println("Incorrect email, please try again!");
                 continue;
             }
@@ -166,7 +199,7 @@ public class UserService {
             }
             else {
                 do {
-                    System.out.println("Please re-input your password:");
+                    System.out.println("Please input your password:");
                     String password = scanner.nextLine();
                     if (!user.getPassword().equalsIgnoreCase(password)) {
                         System.out.println("Incorrect password, please try again!");

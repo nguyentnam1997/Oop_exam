@@ -1,6 +1,7 @@
 package service;
 
 import entities.User;
+import view.Menu;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -19,7 +20,7 @@ public class UserService {
     //check điều kiện email
     public static boolean isValidEmail(String email) {
         // Định dạng regex cho địa chỉ email
-        String emailRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+        String emailRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$";
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
@@ -45,7 +46,7 @@ public class UserService {
                         System.out.println("Please input your email:");
                         String email = scanner.nextLine();
                         if (!UserService.isValidEmail(email)) {
-                            System.out.println("Invalid email, please try again!");
+                            System.out.println("Incorrect email, please try again!");
                             continue;
                         }
                         else {
@@ -53,7 +54,7 @@ public class UserService {
                                 System.out.println("Please input your password:");
                                 String password = scanner.nextLine();
                                 if (!UserService.isValidPassword(password)) {
-                                    System.out.println("Invalid password, please try again!");
+                                    System.out.println("Incorrect password, please try again!");
                                     continue;
                                 }
                                 else {
@@ -69,41 +70,58 @@ public class UserService {
         }
         while (true);
     }
-    public void Login(Scanner scanner, ArrayList<User> users) {
-        int count = 0;
+    public void Login(Scanner scanner, ArrayList<User> users, Menu menu, UserService userService) {
+//        int count = 0;
         do {
-            System.out.println("Please input your username:");
-            String username = scanner.nextLine();
-            for (User user : users) {
-                if (user.getUsername().equalsIgnoreCase(username)) {
-                    do {
-                        System.out.println("Please input your password:");
-                        String password = scanner.nextLine();
-                        if (!user.getPassword().equals(password)) {
-                            System.out.println("Incorrect password, please choose: ");
-                            System.out.println("1. Input password again.");
-                            System.out.println("2. Forget password?");
-                            int choosePw = Integer.parseInt(scanner.nextLine());
-                            switch (choosePw) {
-                                case 1 -> {
-                                    continue;
-                                }
-                                case 2 -> {
-                                    changePassword(scanner, user);
-                                }
-                            }
+            if (users.size() == 0) {
+                System.out.println("No user exists, please register first!");
+                users.add(registerUser(scanner, users));
+            }
+            else {
+                do {
+                    System.out.println("Please input your username:");
+                    String username = scanner.nextLine();
+                    for (User user : users) {
+                        if (user.getUsername().equalsIgnoreCase(username)) {
+                            checkPassword(scanner, user);
+                            menu.viewOptionAfterLogin();
+                            selectOptionAfterLogin(scanner, userService, user , users);
+                            break;
                         }
-                        break;
+                        else {
+                            System.out.println("Incorrect username, please try again!");
+                        }
                     }
-                    while (true);
+                    break;
                 }
-                else count++;
+                while (true);
             }
-            if (count != 0) {
-                System.out.println("Incorrect username, please try again!");
-                continue;
-            }
+            break;
+        }
+        while (true);
+    }
 
+    public void checkPassword(Scanner scanner, User user) {
+        do {
+            System.out.println("Please input your password:");
+            String password = scanner.nextLine();
+            if (!user.getPassword().equals(password)) {
+                System.out.println("Incorrect password, please choose: ");
+                System.out.println("1. Input password again.");
+                System.out.println("2. Forget password?");
+                int choosePw = Integer.parseInt(scanner.nextLine());
+                switch (choosePw) {
+                    case 1 -> {
+                        continue;
+                    }
+                    case 2 -> {
+                        changePassword(scanner, user);
+                    }
+                }
+            }
+            else {
+                System.out.println("------ Login successful! ------");
+            }
             break;
         }
         while (true);
@@ -122,7 +140,7 @@ public class UserService {
                     System.out.println("Please input new password: ");
                     String newPassword = scanner.nextLine();
                     if (!UserService.isValidPassword(newPassword)) {
-                        System.out.println("Invalid password, please try again!");
+                        System.out.println("Incorrect password, please try again!");
                         continue;
                     }
                     else {
@@ -133,6 +151,75 @@ public class UserService {
                 }
                 while (true);
             }
+            break;
+        }
+        while (true);
+    }
+    public void changeUsername(Scanner scanner, User user, ArrayList<User> users) {
+        int count = 0;
+        do {
+            System.out.println("Please re-input your username:");
+            String username = scanner.nextLine();
+            if (!user.getUsername().equalsIgnoreCase(username)) {
+                System.out.println("Incorrect username, please try again!");
+                continue;
+            }
+            else {
+                do {
+                    System.out.println("Please re-input your password:");
+                    String password = scanner.nextLine();
+                    if (!user.getPassword().equalsIgnoreCase(password)) {
+                        System.out.println("Incorrect password, please try again!");
+                        continue;
+                    }
+                    else {
+                        do {
+                            System.out.println("Please enter your new username:");
+                            String newUsername = scanner.nextLine();
+                            for (User us : users) {
+                                if (us.getUsername().equalsIgnoreCase(newUsername)) count++;
+                            }
+                            if (count > 0) {
+                                System.out.println("Username already exists, please re-enter");
+                                continue;
+                            }
+                            else {
+                                user.setUsername(newUsername);
+                                System.out.println("Create new username successful!!!");
+                            }
+                            break;
+                        }
+                        while (true);
+                    }
+                    break;
+                }
+                while (true);
+            }
+            break;
+        }
+        while (true);
+    }
+
+    public void selectOptionAfterLogin(Scanner scanner, UserService userService, User user, ArrayList<User> users) {
+        do {
+            System.out.println("Welcome " + user.getUsername() + " , please choose the options:");
+            int select = Integer.parseInt(scanner.nextLine());
+            switch (select) {
+                case 1:
+                    userService.changeUsername(scanner, user, users);
+                    continue;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+                case 0:
+                    System.out.println("Goodbye!");
+                    System.exit(0);
+                    break;
+            }
+            break;
         }
         while (true);
     }

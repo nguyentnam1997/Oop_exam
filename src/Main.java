@@ -12,7 +12,6 @@ public class Main {
         ArrayList<User> users = new ArrayList<>();
         UserService userService = new UserService();
         Menu menu = new Menu();
-
         do {
             menu.welcomeMenu();
             int choose = Integer.parseInt(scanner.nextLine());
@@ -22,9 +21,11 @@ public class Main {
                     continue;
                 }
                 case 1 -> {
-                    userService.Login(scanner, users);
+                    userService.Login(scanner, users, menu, userService);
+
                 }
             }
+            break;
         }
         while (true);
 

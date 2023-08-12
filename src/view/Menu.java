@@ -10,7 +10,7 @@ public class Menu {
         System.out.println("Please choose: ");
     }
 
-    public void selectOption() {
+    public void viewOptionAfterLogin() {
         System.out.println("1. Change your username");
         System.out.println("2. Change your email");
         System.out.println("3. Change your password");

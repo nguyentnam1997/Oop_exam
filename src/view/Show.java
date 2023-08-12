@@ -13,7 +13,7 @@ public class Show {
         System.out.println("2. Change your email");
         System.out.println("3. Change your password");
         System.out.println("4. Logout");
-        System.out.println("5. Quit");
+        System.out.println("0. Quit");
     }
 
     public void reEnterOrForgetPass() {

@@ -1,4 +1,5 @@
 import entities.User;
+import service.LoginService;
 import service.UserService;
 import view.Show;
 
@@ -10,22 +11,8 @@ public class Main {
         Scanner scanner = new Scanner(System.in);
         ArrayList<User> users = new ArrayList<>();
         UserService userService = new UserService();
+        LoginService loginService = new LoginService();
         Show menu = new Show();
-        do {
-            menu.welcomeMenu();
-            int choose = Integer.parseInt(scanner.nextLine());
-            switch (choose) {
-                case 1 -> {
-                    userService.Login(scanner, users, menu, userService);
-                    continue;
-                }
-                case 2 -> {
-                    users.add(userService.registerUser(scanner, users));
-                    continue;
-                }
-            }
-            break;
-        }
-        while (true);
+        loginService.LoginAndRegisterProgram(scanner, menu, userService, users);
     }
 }

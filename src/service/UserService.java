@@ -282,8 +282,12 @@ public class UserService {
                 do {
                     System.out.println("Please input new password: ");
                     String newPassword = scanner.nextLine();
-                    if (!UserService.isValidPassword(newPassword)) {
+                    if (!isValidPassword(newPassword)) {
                         System.out.println("Incorrect password, please try again!");
+                        continue;
+                    }
+                    if (newPassword.equals(user.getPassword())) {
+                        System.out.println("This password has been created before, please try again!");
                         continue;
                     }
                         System.out.println("Create new password successful!!!");
